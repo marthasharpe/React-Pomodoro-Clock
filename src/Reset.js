@@ -1,9 +1,9 @@
 import React from 'react';
 
-const Reset = ({ handleReset }) => {
+const Reset = props => {
     return (
         <div>
-            <button onClick={handleReset} id='reset'>Reset</button>
+            <button onClick={props.handleReset} id='reset'>Reset</button>
         </div>
     )
 }
