@@ -2,55 +2,49 @@ import React, { useState } from 'react';
 import Session from './Session';
 // import Break from './Break';
 import Timer from './Timer';
-import Reset from './Reset';
 import './App.css';
 
 const App = () => {
-  const [state, setState] = useState({
-    sessionLength: 25,
-    breakLength: 5,
-    timerLabel: 'Session',
-    timeLeft: 25,
-    running: false,
-  })
+
+  const [sessionLength, setSessionLength] = useState(25);
+  // const [breakLength, setBreakLength] = useState(5);
+  const [timerLabel, setTimerLable] = useState('Session');
+  const [timeLeft, setTimeLeft] = useState(25);
+  // const [running, setRunning] = useState(false);
+
+  //if timeleft === 0, audio.play(), then change timerlabel
+  //if timerlabel === 'session', set timeleft as sessionlength
+  //if timerlabel === 'break', set timeleft as breaklength
 
   const handleReset = () => {
     console.log('reset')
-    setState({
-      sessionLength: 25,
-      breakLength: 5,
-      timerLabel: 'Session',
-      timeLeft: 25,
-      running: false,
-    })
+    setSessionLength(25);
+    // setBreakLength(5);
+    setTimerLable('Session');
+    setTimeLeft(25);
+    // setRunning(false);
   }
 
   const incrementSession = () => {
-    setState({
-      ...state,
-      sessionLength: state.sessionLength + 1
-    })
+    setSessionLength(sessionLength + 1)
   }
   const decrementSession = () => {
-    this.setState({
-      ...state,
-      sessionLength: state.sessionLength - 1
-    })
+    setSessionLength(sessionLength - 1)
   }
   
   return (
     <div className="app-container">
       <h1>Pomodoro Clock</h1>
       <Session
-        sessionLength={state.sessionLength}
+        sessionLength={sessionLength}
         incrementSession={incrementSession}
         decrementSession={decrementSession}
       />
       <Timer
-        timerLabel={state.timerLabel}
-        timeLeft={state.timeLeft}
+        timerLabel={timerLabel}
+        timeLeft={timeLeft}
+        handleReset={handleReset}
       />
-      <Reset handleReset={handleReset}/>
     </div>
   );
 }
