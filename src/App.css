@@ -3,15 +3,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-}
-
-.label-container {
-    display: flex;
-}
-
-button {
-    font-size: 1rem;
-    cursor: pointer;
+    text-align: center;
 }

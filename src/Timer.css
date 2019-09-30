@@ -14,6 +14,17 @@
     border: 1px solid black;
 }
 
+.label-container {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+}
+
+button {
+    font-size: 1rem;
+    cursor: pointer;
+}
+
 #timer-label {
     margin: 0;
 }
