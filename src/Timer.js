@@ -6,12 +6,11 @@ const Timer = props => {
     const [timerLabel, setTimerLabel] = useState('Session');
     const [timerRunning, setTimerRunning] = useState(false);
 
-
-
     useEffect(() => {
       const countdown = setInterval(() => {
-        setTimeLeft(timeLeft - 1);
-      }, 1000);
+        if (timeLeft > 0) {
+            setTimeLeft(timeLeft - 1);
+        }}, 1000);
        return () => clearInterval(countdown);
     }, [timeLeft]);
     
