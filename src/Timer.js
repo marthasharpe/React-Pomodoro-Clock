@@ -1,22 +1,63 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Timer.css';
 
-const Timer = props => {  
+const Timer = props => {
+    const [timeLeft, setTimeLeft] = useState(props.sessionLength);
+    const [timerLabel, setTimerLabel] = useState('Session');
+    const [timerRunning, setTimerRunning] = useState(false);
 
-    let time = props.timeLeft * 60;
-    let minutes = Math.floor(time / 60);
-    let seconds = (time % 60);
+
+
+    useEffect(() => {
+      const countdown = setInterval(() => {
+        setTimeLeft(timeLeft - 1);
+      }, 1000);
+       return () => clearInterval(countdown);
+    }, [timeLeft]);
+    
+    const handleStart = () => {
+        console.log('start')
+        setTimerRunning(true);
+    }
+    
+    const handleStop = () => {
+        console.log('stop')
+        setTimerRunning(false);
+    }
+    
+    const handleReset = () => {
+        console.log('reset')
+        props.setSessionLength(25)
+        props.setBreakLength(5)
+        setTimeLeft(props.sessionLength)
+        setTimerLabel('Session');
+    }
 
     return (
         <div className='timer-component'>
+            
             <div className='timer-container'>
-                <h2 id='timer-label'>{props.timerLabel} Time</h2>
+                <h2 id='timer-label'>{timerLabel} Time</h2>
                 <h3 id='time-left'>
-                    {minutes < 10 ? ("0" + minutes).slice(-2) : minutes}:{seconds < 10 ? ("0" + seconds).slice(-2) : seconds}
+                    {timeLeft}
+                    {/* {minutes < 10 ? ("0" + minutes).slice(-2) : minutes}:{seconds < 10 ? ("0" + seconds).slice(-2) : seconds} */}
                 </h3>
-                <button id='start-stop'>Start/Stop</button>
+                
+                <button
+                    id='start-stop'
+                    onClick={timerRunning ? handleStop : handleStart}
+                    >
+                Start/Stop
+                </button>
             </div>
-            <button onClick={props.handleReset} id='reset'>Reset</button>
+            
+            <button
+                onClick={handleReset}
+                id='reset'
+                >
+            Reset
+            </button>
+        
         </div>
     )
 }

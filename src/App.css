@@ -7,6 +7,10 @@
     align-items: center;
 }
 
+.label-container {
+    display: flex;
+}
+
 button {
     font-size: 1rem;
     cursor: pointer;
