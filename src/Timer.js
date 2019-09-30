@@ -2,36 +2,41 @@ import React, { useState, useEffect } from 'react';
 import './Timer.css';
 
 const Timer = props => {
-    const [timeLeft, setTimeLeft] = useState(props.sessionLength);
+    const [timeLeft, setTimeLeft] = useState(props.sessionLength * 60);
     const [timerLabel, setTimerLabel] = useState('Session');
     const [timerRunning, setTimerRunning] = useState(false);
 
-// if timeLeft === 0, call a function that changes timerLabel to the opposite and changes timeLeft to the label's length
-    
-const handleSwitch = () => {
-        if (timerLabel === 'Session') {
-            setTimerLabel('Break');
-            setTimeLeft(props.breakLength);
-        } else if (timerLabel === 'Break') {
-            setTimerLabel('Session');
-            setTimeLeft(props.sessionLength);
-        }
-    }
+// How to update timeLeft based on props.sessionLength?
+// put timeLeft into 00:00 format
+    let minutes = Math.floor(timeLeft / 60);
+    let seconds = timeLeft - minutes * 60;
 
     useEffect(() => {
+        const handleSwitch = () => {
+            console.log('switch');
+            if (timerLabel === 'Session') {
+                setTimerLabel('Break');
+                setTimeLeft(props.breakLength);
+            } else if (timerLabel === 'Break') {
+                setTimerLabel('Session');
+                setTimeLeft(props.sessionLength);
+            }
+        }
+
         let countdown = null;
-        if (timerRunning && timeLeft > 0) {
+        if (timerRunning && timeLeft >= 0) {
             countdown = setInterval(() => {
                 setTimeLeft(timeLeft - 1);
             }, 1000);
-        } else if (timeLeft === 0) {
+        } else if (timeLeft < 0) {
             handleSwitch();
             clearInterval(countdown);
         } else {
             clearInterval(countdown);
         }
         return () => clearInterval(countdown);
-    }, [timerRunning, timeLeft, handleSwitch]);
+    },
+    [timerRunning, timeLeft, timerLabel, props.breakLength, props.sessionLength]);
     
     const handleStart = () => {
         console.log('start')
@@ -47,7 +52,7 @@ const handleSwitch = () => {
         console.log('reset');
         props.setSessionLength(25);
         props.setBreakLength(5);
-        setTimeLeft(props.sessionLength);
+        setTimeLeft(props.sessionLength * 60);
         setTimerLabel('Session');
         setTimerRunning(false);
     }
@@ -58,12 +63,12 @@ const handleSwitch = () => {
             <div className='timer-container'>
                 <h2 id='timer-label'>{timerLabel} Time</h2>
                 <h3 id='time-left'>
-                    {timeLeft}
-                    {/* {minutes < 10 ? ("0" + minutes).slice(-2) : minutes}:{seconds < 10 ? ("0" + seconds).slice(-2) : seconds} */}
+                    {/* {timeLeft} */}
+                    {minutes < 10 ? ("0" + minutes).slice(-2) : minutes}:{seconds < 10 ? ("0" + seconds).slice(-2) : seconds}
                 </h3>
                 
                 <button
-                    id='start-stop'
+                    id='start_stop'
                     onClick={timerRunning ? handleStop : handleStart}
                     >
                 Start/Stop
