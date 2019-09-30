@@ -6,13 +6,32 @@ const Timer = props => {
     const [timerLabel, setTimerLabel] = useState('Session');
     const [timerRunning, setTimerRunning] = useState(false);
 
+// if timeLeft === 0, call a function that changes timerLabel to the opposite and changes timeLeft to the label's length
+    
+const handleSwitch = () => {
+        if (timerLabel === 'Session') {
+            setTimerLabel('Break');
+            setTimeLeft(props.breakLength);
+        } else if (timerLabel === 'Break') {
+            setTimerLabel('Session');
+            setTimeLeft(props.sessionLength);
+        }
+    }
+
     useEffect(() => {
-      const countdown = setInterval(() => {
-        if (timeLeft > 0) {
-            setTimeLeft(timeLeft - 1);
-        }}, 1000);
-       return () => clearInterval(countdown);
-    }, [timeLeft]);
+        let countdown = null;
+        if (timerRunning && timeLeft > 0) {
+            countdown = setInterval(() => {
+                setTimeLeft(timeLeft - 1);
+            }, 1000);
+        } else if (timeLeft === 0) {
+            handleSwitch();
+            clearInterval(countdown);
+        } else {
+            clearInterval(countdown);
+        }
+        return () => clearInterval(countdown);
+    }, [timerRunning, timeLeft, handleSwitch]);
     
     const handleStart = () => {
         console.log('start')
@@ -25,11 +44,12 @@ const Timer = props => {
     }
     
     const handleReset = () => {
-        console.log('reset')
-        props.setSessionLength(25)
-        props.setBreakLength(5)
-        setTimeLeft(props.sessionLength)
+        console.log('reset');
+        props.setSessionLength(25);
+        props.setBreakLength(5);
+        setTimeLeft(props.sessionLength);
         setTimerLabel('Session');
+        setTimerRunning(false);
     }
 
     return (
