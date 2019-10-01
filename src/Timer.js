@@ -3,65 +3,70 @@ import Session from './Session';
 import Break from './Break';
 import './Timer.css';
 
+
 const Timer = () => {
     const [sessionLength, setSessionLength] = useState(25);
     const [breakLength, setBreakLength] = useState(5);
     const [timerLabel, setTimerLabel] = useState('Session');
-    const [timeLeft, setTimeLeft] = useState(sessionLength * 60);
-    const [timerRunning, setTimerRunning] = useState(false);  
-  
+    const [secondsLeft, setSecondsLeft] = useState(25 * 60);
+    const [timerRunning, setTimerRunning] = useState(false);
+    const [myAudio] = useState(new Audio('https://www.pacdv.com/sounds/voices/im-so-ready.wav'));
+   
     const incrementSession = () => {
-      if (sessionLength < 60){
+      if (!timerRunning && sessionLength < 60){
         setSessionLength(sessionLength + 1)
+        setSecondsLeft((sessionLength + 1) * 60);
       }
     }
     const decrementSession = () => {
-      if (sessionLength > 1) {
+      if (!timerRunning && sessionLength > 1) {
         setSessionLength(sessionLength - 1)
+        setSecondsLeft((sessionLength - 1) * 60);
       }
     }
     const incrementBreak = () => {
-      if (breakLength < 60){
+      if (!timerRunning && breakLength < 60){
         setBreakLength(breakLength + 1)
       }
     }
     const decrementBreak = () => {
-      if (breakLength > 1) {
+      if (!timerRunning && breakLength > 1) {
         setBreakLength(breakLength - 1)
       }
     }
   
-// How to update timeLeft based on props.sessionLength?
-    let minutes = Math.floor(timeLeft / 60);
-    let seconds = timeLeft - minutes * 60;
+    let minutes = Math.floor(secondsLeft / 60);
+    let seconds = secondsLeft - minutes * 60;
 
     useEffect(() => {
         const handleSwitch = () => {
             console.log('switch');
             if (timerLabel === 'Session') {
                 setTimerLabel('Break');
-                setTimeLeft(breakLength);
+                setSecondsLeft(breakLength * 60);
             } else if (timerLabel === 'Break') {
                 setTimerLabel('Session');
-                setTimeLeft(sessionLength);
+                setSecondsLeft(sessionLength * 60);
             }
         }
-
+        
         let countdown = null;
-        if (timerRunning && timeLeft > 0) {
+        if (timerRunning && secondsLeft > 0) {
             countdown = setInterval(() => {
-                setTimeLeft(timeLeft - 1);
+                setSecondsLeft(secondsLeft - 1);
             }, 1000);
-        } else if (timeLeft === 0) {
-            //audio.play();
+        } else if (timerRunning && secondsLeft === 0) {
+            countdown = setInterval(() => {
+                setSecondsLeft(secondsLeft - 1);
+            }, 1000);
+            myAudio.play();
             handleSwitch();
-            clearInterval(countdown);
         } else {
             clearInterval(countdown);
         }
         return () => clearInterval(countdown);
     },
-    [timerRunning, timeLeft, timerLabel, breakLength, sessionLength]);
+    [timerRunning, secondsLeft, timerLabel, breakLength, sessionLength, myAudio]);
     
     const handleStart = () => {
         console.log('start')
@@ -77,9 +82,10 @@ const Timer = () => {
         console.log('reset');
         setSessionLength(25);
         setBreakLength(5);
-        setTimeLeft(sessionLength * 60);
+        setSecondsLeft(25 * 60);
         setTimerLabel('Session');
         setTimerRunning(false);
+        myAudio.currentTime = 0;
     }
 
     return (
@@ -116,11 +122,12 @@ const Timer = () => {
                 >
             Reset
             </button>
-        
+
             {/* <audio
                 id='beep'
-                src=''
-                ref={}
+                src='https://www.pacdv.com/sounds/voices/im-so-ready.wav'
+                type='audio'
+                ref={myAudio}
                 /> */}
         </div>
     )
