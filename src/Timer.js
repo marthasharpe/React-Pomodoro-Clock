@@ -101,7 +101,7 @@ const Timer = () => {
                 />
             </div>
             <div className='timer-container'>
-                <h2 id='timer-label'>{timerLabel} Time</h2>
+                <h2 id='timer-label'>{timerLabel}</h2>
                 <h3 id='time-left'>
                     {minutes < 10 ? ("0" + minutes).slice(-2) : minutes}:{seconds < 10 ? ("0" + seconds).slice(-2) : seconds}
                 </h3>
