@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Session from './Session';
 import Break from './Break';
 import './Timer.css';
-
+import soundfile from './ride.wav'
 
 const Timer = () => {
     const [sessionLength, setSessionLength] = useState(25);
@@ -10,8 +10,8 @@ const Timer = () => {
     const [timerLabel, setTimerLabel] = useState('Session');
     const [secondsLeft, setSecondsLeft] = useState(25 * 60);
     const [timerRunning, setTimerRunning] = useState(false);
-    const [myAudio] = useState(new Audio('https://www.pacdv.com/sounds/voices/im-so-ready.wav'));
-   
+    const myAudio = useRef();
+    
     const incrementSession = () => {
       if (!timerRunning && sessionLength < 60){
         setSessionLength(sessionLength + 1)
@@ -59,7 +59,7 @@ const Timer = () => {
             countdown = setInterval(() => {
                 setSecondsLeft(secondsLeft - 1);
             }, 1000);
-            myAudio.play();
+            myAudio.current.play();
             handleSwitch();
         } else {
             clearInterval(countdown);
@@ -69,23 +69,21 @@ const Timer = () => {
     [timerRunning, secondsLeft, timerLabel, breakLength, sessionLength, myAudio]);
     
     const handleStart = () => {
-        console.log('start')
         setTimerRunning(true);
     }
     
     const handleStop = () => {
-        console.log('stop')
         setTimerRunning(false);
     }
     
     const handleReset = () => {
-        console.log('reset');
         setSessionLength(25);
         setBreakLength(5);
         setSecondsLeft(25 * 60);
         setTimerLabel('Session');
         setTimerRunning(false);
-        myAudio.currentTime = 0;
+        myAudio.current.pause();
+        myAudio.current.currentTime = 0;
     }
 
     return (
@@ -122,13 +120,12 @@ const Timer = () => {
                 >
             Reset
             </button>
-
-            {/* <audio
-                id='beep'
-                src='https://www.pacdv.com/sounds/voices/im-so-ready.wav'
-                type='audio'
-                ref={myAudio}
-                /> */}
+            <audio
+                    id='beep'
+                    ref={myAudio}
+                    src={soundfile}
+                    type='audio'
+                ></audio>
         </div>
     )
 }
