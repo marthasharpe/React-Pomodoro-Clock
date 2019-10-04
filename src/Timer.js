@@ -11,6 +11,7 @@ const Timer = () => {
     const [secondsLeft, setSecondsLeft] = useState(25 * 60);
     const [timerRunning, setTimerRunning] = useState(false);
     const myAudio = useRef();
+    const context = new AudioContext();
     
     const incrementSession = () => {
       if (!timerRunning && sessionLength < 60){
@@ -36,11 +37,10 @@ const Timer = () => {
     }
   
     let minutes = Math.floor(secondsLeft / 60);
-    let seconds = secondsLeft - minutes * 60;
+    let seconds = secondsLeft % 60;
 
     useEffect(() => {
         const handleSwitch = () => {
-            console.log('switch');
             if (timerLabel === 'Session') {
                 setTimerLabel('Break');
                 setSecondsLeft(breakLength * 60);
@@ -49,7 +49,7 @@ const Timer = () => {
                 setSecondsLeft(sessionLength * 60);
             }
         }
-        
+
         let countdown = null;
         if (timerRunning && secondsLeft > 0) {
             countdown = setInterval(() => {
@@ -69,6 +69,8 @@ const Timer = () => {
     [timerRunning, secondsLeft, timerLabel, breakLength, sessionLength, myAudio]);
     
     const handleStart = () => {
+        console.log(context);
+        context.resume();
         setTimerRunning(true);
     }
     
@@ -121,11 +123,11 @@ const Timer = () => {
             Reset
             </button>
             <audio
-                    id='beep'
-                    ref={myAudio}
-                    src={soundfile}
-                    type='audio'
-                ></audio>
+                id='beep'
+                ref={myAudio}
+                src={soundfile}
+                type='audio'
+            ></audio>
         </div>
     )
 }
