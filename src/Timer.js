@@ -69,7 +69,6 @@ const Timer = () => {
     [timerRunning, secondsLeft, timerLabel, breakLength, sessionLength, myAudio]);
     
     const handleStart = () => {
-        console.log(context);
         context.resume();
         setTimerRunning(true);
     }
@@ -114,14 +113,14 @@ const Timer = () => {
                     >
                 Start/Stop
                 </button>
+                <button
+                    onClick={handleReset}
+                    id='reset'
+                    >
+                Reset
+                </button>
             </div>
             
-            <button
-                onClick={handleReset}
-                id='reset'
-                >
-            Reset
-            </button>
             <audio
                 id='beep'
                 ref={myAudio}
